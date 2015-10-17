@@ -41,7 +41,8 @@ var Enemy = function(position) {
 
 Enemy.prototype.move = function() {
   // update this.position with a random pair of coords
-  this.position = randomCoordinateGenerator();
+  var pos = randomCoordinateGenerator();
+  this.position = pos;
 };
 
 function randomCoordinateGenerator() {
@@ -74,16 +75,32 @@ var enemyInstances = board.selectAll('circle').data(enemiesArr).enter().append('
   return d.position.x;
 }).attr('cy', function(d){
   return d.position.y;
-}).attr('r', 10).attr('fill', 'red');
+}).attr('r', 10).attr('fill', 'red').attr('class', 'enemy');
 
 
 // every tick: use d3.timer(xMilliSec, cb) to call the transition function(takes a cb [randomMove]) to animate
 // use the transition function with tween to call collision detection function
 
+d3.timer(300, function(){
+  // generate new x- and y- coordinates for each enemy
+    // call .move on all enemy instances
+  // based on new x and y, transition all enemy instances
+    // use transition.attr() on each enemy instance to set new cx and cy values (this.position.x, this.position.y)
+  // check if player object comes into contact with any enemy
+});
 
+// Use setInterval to call .move() on each enemy
+setInterval(function(){
+  enemiesArr.forEach(function(enemy) {
+    enemy.move();
+  });
+  board.selectAll('.enemy').transition().attr('cx', function(d){ return d.position.x; })
+                                        .attr('cy', function(d){ return d.position.y; });
 
-
-
+  // call a collisionDetection function
+    // this fn would tell us if player's coordinates intersect enemy's coordinates
+}, 2500);
+// Use d3.transition to update attribute to reflect move
 
 
 // collision detection
