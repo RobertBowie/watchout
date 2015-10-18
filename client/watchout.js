@@ -94,12 +94,48 @@ setInterval(function(){
   enemiesArr.forEach(function(enemy) {
     enemy.move();
   });
-  board.selectAll('.enemy').transition().attr('cx', function(d){ return d.position.x; })
-                                        .attr('cy', function(d){ return d.position.y; });
 
-  // call a collisionDetection function
-    // this fn would tell us if player's coordinates intersect enemy's coordinates
-}, 2500);
+  board.selectAll('.enemy').transition().duration(2000).tween('tween', wrapper).attr('cx', function(d){ return d.position.x; })
+       .attr('cy', function(d){ return d.position.y; });
+
+  // return a function that compares this.position.x to player.position.x (same for .position.y)
+    // if they're equal
+      // reset current score
+}, 3000);
+
+function collisionDetection(d, enemyX, enemyY){
+  d.position.x = enemyX;
+  d.position.y = enemyY;
+  var playerUpperX = + playerInstance.attr('cx') + 10;
+  var playerLowerX = + playerInstance.attr('cx') - 10;
+  var playerUpperY = + playerInstance.attr('cy') + 10;
+  var playerLowerY = + playerInstance.attr('cy') - 10;
+
+  // var enemyUpperX = d.attr('cx') + 10;
+  // var enemyLowerX = d.attr('cx') - 10;
+  // var enemyUpperY = d.attr('cy') + 10;
+  // var enemyLowerY = d.attr('cy') - 10;
+
+  var collision = (d.position.x > playerLowerX && d.position.x < playerUpperX) && (d.position.y > playerLowerY && d.position.y < playerUpperY);
+
+  if( collision ){
+    console.log('collision detected!');
+    d3.select('body').select('.scoreboard').attr('background', '#ff0000');
+    // reset score
+    // blink screen red or something
+  }
+  return false;
+};
+function wrapper(d){
+  var context = this;
+
+  d3.timer(function(){
+    var enemyX = + d3.select(context).attr('cx');
+    var enemyY = + d3.select(context).attr('cy');
+    collisionDetection(d, enemyX, enemyY);
+  });
+};
+
 // Use d3.transition to update attribute to reflect move
 
 
